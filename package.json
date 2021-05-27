@@ -1,0 +1,12 @@
+{
+	"name": "com.fedoradev.npcschedule",
+	"displayName": "NPC Schedule",
+	"version": "1.0.0",
+	"unity": "2020.3",
+	"unityRelease": "2f1",
+	"description": "A modular scheduling system for NPCs in Unity.",
+	"author": {
+		"name": "Fedora Dev",
+		"email": "fedora.game.dev@gmail.com"
+	}
+}

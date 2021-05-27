@@ -1,0 +1,16 @@
+{
+    "name": "_FedoraDev.NPCSchedule.Implementations",
+    "rootNamespace": "FedoraDev.NPCSchedule.Implementations",
+    "references": [
+        "GUID:54464dd2c3277b445a81dc494e1d5dc3"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
