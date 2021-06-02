@@ -4,6 +4,7 @@ using UnityEngine;
 namespace FedoraDev.NPCSchedule.Implementations
 {
 	[CreateAssetMenu(fileName = "New Schedule", menuName = "NPC/Schedule")]
+	[HideMonoScript]
 	public class ScriptableSchedule : SerializedScriptableObject, ISchedule
 	{
 		[SerializeField] ISchedule _schedule;

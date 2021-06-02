@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace FedoraDev.NPCSchedule.Implementations
 {
+	[HideMonoScript]
     public class ScheduleBehaviour : SerializedMonoBehaviour
     {
         [SerializeField, InlineEditor, HideLabel, BoxGroup("Schedule")] ISchedule _schedule;
