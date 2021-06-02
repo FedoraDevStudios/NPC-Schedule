@@ -4,7 +4,7 @@ namespace FedoraDev.NPCSchedule
 {
 	public interface ISchedule
     {
-        ITask GetCurrentTask();
+        ITask GetCurrentTask(float value);
         ISchedule GetRuntime();
     }
 }

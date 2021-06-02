@@ -8,7 +8,7 @@ namespace FedoraDev.NPCSchedule.Implementations
 	{
 		[SerializeField] ISchedule _schedule;
 
-		public ITask GetCurrentTask() => _schedule.GetCurrentTask();
+		public ITask GetCurrentTask(float value) => _schedule.GetCurrentTask(value);
 		public ISchedule GetRuntime() => _schedule.GetRuntime();
 	}
 }

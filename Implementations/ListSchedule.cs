@@ -8,7 +8,16 @@ namespace FedoraDev.NPCSchedule.Implementations
 	{
 		[SerializeField, HideLabel, BoxGroup("Schedule")] List<IScheduleable> _schedule = new List<IScheduleable>();
 
-		public ITask GetCurrentTask() => throw new System.NotImplementedException();
+		public ITask GetCurrentTask(float value)
+		{
+			SortSchedule();
+
+			for (int i = 1; i < _schedule.Count; i++)
+				if (_schedule[i].TimeSolver.GetValue() > value)
+					return _schedule[i - 1].Task;
+
+			return _schedule[_schedule.Count - 1].Task;
+		}
 
 		public ISchedule GetRuntime()
 		{
@@ -21,6 +30,6 @@ namespace FedoraDev.NPCSchedule.Implementations
 		}
 
 		[Button("Sort")]
-		private void SortList() => _schedule.Sort();
+		private void SortSchedule() => _schedule.Sort();
 	}
 }
