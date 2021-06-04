@@ -10,13 +10,7 @@ namespace FedoraDev.NPCSchedule.Implementations
 
 		public ITask GetCurrentTask(float value)
 		{
-			SortSchedule();
-
-			for (int i = 1; i < _schedule.Count; i++)
-				if (_schedule[i].TimeSolver.GetValue() > value)
-					return _schedule[i - 1].Task;
-
-			return _schedule[_schedule.Count - 1].Task;
+			return _schedule[GetTaskIndexAt(value)].Task;
 		}
 
 		public ISchedule GetRuntime()
@@ -27,6 +21,29 @@ namespace FedoraDev.NPCSchedule.Implementations
 				schedule._schedule.Add(_schedule[i]);
 
 			return schedule;
+		}
+
+		public void AddTask(IScheduleable scheduleable)
+		{
+			_schedule.Add(scheduleable);
+			SortSchedule();
+		}
+
+		public void ReplaceTaskAt(IScheduleable scheduleable, float timeValue)
+		{
+			int index = GetTaskIndexAt(timeValue);
+			_schedule[index] = scheduleable;
+		}
+
+		int GetTaskIndexAt(float timeValue)
+		{
+			SortSchedule();
+
+			for (int i = 1; i < _schedule.Count; i++)
+				if (_schedule[i].TimeSolver.GetValue() > timeValue)
+					return i - 1;
+
+			return _schedule.Count - 1;
 		}
 
 		[Button("Sort")]
