@@ -15,6 +15,6 @@ namespace FedoraDev.NPCSchedule.Implementations
 		[SerializeField, HorizontalGroup("Time"), HideLabel, Range(0, 24)] int _hour;
 		[SerializeField, HorizontalGroup("Time"), HideLabel, Range(0, 59)] int _minute;
 
-		public float GetValue() => _hour + (_minute / 100f);
+		public ulong GetValue() => (ulong)(((_hour * 100) + _minute) * 100);
 	}
 }
