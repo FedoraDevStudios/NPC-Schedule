@@ -18,6 +18,8 @@ namespace FedoraDev.NPCSchedule.Implementations
 			FillSchedule();
 		}
 
+		public void SetTaskPool(ITaskPool taskPool) => _taskPool = taskPool;
+
 		public void FillSchedule()
 		{
 			ITimeFrame timeFrame = GetNextHoleInSchedule();
