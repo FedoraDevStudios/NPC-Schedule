@@ -1,6 +1,5 @@
 using Sirenix.OdinInspector;
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace FedoraDev.NPCSchedule.Implementations
@@ -10,13 +9,32 @@ namespace FedoraDev.NPCSchedule.Implementations
 		[SerializeField, HorizontalGroup("Time"), LabelText("Time")] byte _hour;
 		[SerializeField, HorizontalGroup("Time"), LabelText(":"), LabelWidth(5f)] byte _minute;
 
+		public ITimeSolver Produce()
+		{
+			byte[] bytes = new byte[8];
+			bytes[0] = _minute;
+			bytes[1] = _hour;
+
+			SimpleTimeSolver timeSolver = new SimpleTimeSolver();
+			timeSolver.SetTime(BitConverter.ToUInt64(bytes, 0));
+
+			return timeSolver;
+		}
+
 		public ulong GetValue()
 		{
-			List<byte> bytes = new List<byte>(8);
-			bytes.Add(_minute);
-			bytes.Add(_hour);
+			byte[] bytes = new byte[8];
+			bytes[0] = _minute;
+			bytes[1] = _hour;
 
-			return BitConverter.ToUInt64(bytes.ToArray(), 0);
+			return BitConverter.ToUInt64(bytes, 0);
+		}
+
+		public void SetTime(ulong value)
+		{
+			byte[] bytes = BitConverter.GetBytes(value);
+			_minute = bytes[0];
+			_hour = bytes[1];
 		}
 
 		public void AddTime(ulong duration)

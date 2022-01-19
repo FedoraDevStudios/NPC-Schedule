@@ -8,5 +8,6 @@ namespace FedoraDev.NPCSchedule.Implementations
 		[SerializeField] ITaskFilter[] _taskFilters = new ITaskFilter[0];
 
 		public bool IsValid(IContext context) => _taskFilters.All(taskFilter => taskFilter.IsValid(context));
+		public ITaskFilter Produce() => new ManyTaskFilter();
 	}
 }

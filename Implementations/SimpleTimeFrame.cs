@@ -10,28 +10,26 @@ namespace FedoraDev.NPCSchedule.Implementations
 		[SerializeField] ITimeSolver _startTime;
 		[SerializeField] ITimeSolver _endTime;
 
-		public SimpleTimeFrame(ITimeSolver startTime, ITimeSolver endTime) => SetTimeFrame(startTime, endTime);
-		public SimpleTimeFrame(ITimeSolver startTime, ulong duration) => SetTimeFrame(startTime, duration);
-		public SimpleTimeFrame(ulong duration, ITimeSolver endTime) => SetTimeFrame(duration, endTime);
-
-		public void SetTimeFrame(ITimeSolver startTime, ITimeSolver endTime)
+		public SimpleTimeFrame(ITimeSolver startTime, ITimeSolver endTime)
 		{
 			_startTime = startTime;
 			_endTime = endTime;
 		}
 
-		public void SetTimeFrame(ITimeSolver startTime, ulong duration)
+		public ITimeFrame Produce()
 		{
-			_startTime = startTime;
-			startTime.AddTime(duration);
-			_endTime = startTime;
+			ITimeSolver startTime = ScheduleFactory.ProduceTimeSolver();
+			ITimeSolver endTime = ScheduleFactory.ProduceTimeSolver();
+			startTime.SetTime(startTime.GetValue());
+			endTime.SetTime(endTime.GetValue());
+			SimpleTimeFrame timeFrame = new SimpleTimeFrame(startTime, endTime);
+			return timeFrame;
 		}
 
-		public void SetTimeFrame(ulong duration, ITimeSolver endTime)
+		public void SetTimeFrame(ulong startTime, ulong endTime)
 		{
-			_endTime = endTime;
-			endTime.SubtractTime(duration);
-			_startTime = endTime;
+			_startTime.SetTime(startTime);
+			_endTime.SetTime(endTime);
 		}
 
 		public bool IsValidTime(ITimeSolver timeSolver) => IsValidTime(timeSolver.GetValue());

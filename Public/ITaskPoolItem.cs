@@ -7,5 +7,9 @@ namespace FedoraDev.NPCSchedule
         ITaskFilter TaskFilter { get; }
         IPrioritySolver PrioritySolver { get; }
         IAttendantSolver AttendantSolver { get; }
+        bool StartFlexible { get; }
+        bool EndFlexible { get; }
+
+        ITaskPoolItem Produce();
     }
 }
