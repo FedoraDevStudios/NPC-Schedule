@@ -20,8 +20,6 @@ namespace FedoraDev.NPCSchedule.Implementations
 		[SerializeField] bool _startFlexible = false;
 		[SerializeField] bool _endFlexible = false;
 
-		public SimpleTaskPoolItem() => Produce();
-
 		public ITaskPoolItem Produce()
 		{
 			SimpleTaskPoolItem taskPoolItem = new SimpleTaskPoolItem();

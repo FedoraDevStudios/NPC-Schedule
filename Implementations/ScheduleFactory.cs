@@ -12,7 +12,28 @@ namespace FedoraDev.NPCSchedule.Implementations
         [SerializeField] ITaskFilter _taskFilterFab;
         [SerializeField] IAttendantSolver _attendantSolverFab;
 
-        public static ITaskPoolItem ProduceTaskPoolItem()
+		private void Reset()
+		{
+			if (_timeSolverFab == null)
+				_timeSolverFab = new SimpleTimeSolver();
+
+			if (_timeFrameFab == null)
+				_timeFrameFab = new SimpleTimeFrame(_timeSolverFab, _timeSolverFab);
+
+			if (_taskPoolItemFab == null)
+				_taskPoolItemFab = new SimpleTaskPoolItem();
+
+			if (_prioritySolverFab == null)
+				_prioritySolverFab = new SimplePrioritySolver();
+
+			if (_taskFilterFab == null)
+				_taskFilterFab = new ManyTaskFilter();
+
+			if (_attendantSolverFab == null)
+				_attendantSolverFab = new SimpleAttendantSolver();
+		}
+
+		public static ITaskPoolItem ProduceTaskPoolItem()
 		{
             return ScheduleFactoryBehaviour.ScheduleFactory._taskPoolItemFab.Produce();
 		}

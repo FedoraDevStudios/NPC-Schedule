@@ -32,16 +32,18 @@ namespace FedoraDev.NPCSchedule.Implementations
 				if (Instance._scheduleFactory == null)
 				{
 #if UNITY_EDITOR
-					Instance._scheduleFactory = SerializedScriptableObject.CreateInstance<ScheduleFactory>();
-					Directory.CreateDirectory(FACTORY_PATH);
-					AssetDatabase.CreateAsset(Instance._scheduleFactory, FactoryAsset);
-					AssetDatabase.SaveAssets();
+					Instance.GenerateNewFactory();
 #else
 					throw new NullReferenceException("No Schedule Factory found! This is really bad and breaks the game. =[");
 #endif
 				}
 
 				return Instance._scheduleFactory;
+			}
+
+			private set
+			{
+				Instance._scheduleFactory = value;
 			}
 		}
 
@@ -53,5 +55,22 @@ namespace FedoraDev.NPCSchedule.Implementations
 		{
 			Debug.Log(ScheduleFactory.name + " Added.");
 		}
+
+		[Button]
+		void CreateNewFactory()
+		{
+			GenerateNewFactory();
+		}
+
+#if UNITY_EDITOR
+		void GenerateNewFactory()
+		{
+			Instance._scheduleFactory = SerializedScriptableObject.CreateInstance<ScheduleFactory>();
+			if (!Directory.Exists(FACTORY_PATH))
+				_ = Directory.CreateDirectory(FACTORY_PATH);
+			AssetDatabase.CreateAsset(Instance._scheduleFactory, FactoryAsset);
+			AssetDatabase.SaveAssets();
+		}
+#endif
 	}
 }
