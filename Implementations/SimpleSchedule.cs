@@ -11,20 +11,22 @@ namespace FedoraDev.NPCSchedule.Implementations
 		[SerializeField] IContext _context;
 		[SerializeField] ITaskPool _taskPool;
 		[SerializeField] IScheduleable _defaultTask;
+		[SerializeField] int _maxIterationsForSafety = 100;
 
-		public void AddScheduleable(IScheduleable scheduleable)
-		{
-			PruneTimeFrame(scheduleable.TimeFrame);
-			AddToScheduleList(scheduleable);
-			FillSchedule();
-		}
+		//TODO: Add a way to 'push' a task to an NPC and have them consider whether they want to attend.
+		//public void AddScheduleable(IScheduleable scheduleable)
+		//{
+		//	PruneTimeFrame(scheduleable.TimeFrame);
+		//	AddToScheduleList(scheduleable);
+		//	FillSchedule();
+		//}
 
 		public void SetTaskPool(ITaskPool taskPool) => _taskPool = taskPool;
 
 		public void FillSchedule()
 		{
 			ITimeFrame timeFrame = GetNextHoleInSchedule();
-			for (int i = 100; i > 0; i--) //Do this up to 100 times before quitting.
+			for (int i = _maxIterationsForSafety; i > 0; i--) //Do this up to 100 times before quitting.
 			{
 				FillScheduleTimeFrame(timeFrame);
 
@@ -35,26 +37,7 @@ namespace FedoraDev.NPCSchedule.Implementations
 			}
 		}
 
-		//[Button]
-		//public void AddTask()
-		//{
-		//	if (!Application.isPlaying)
-		//	{
-		//		Debug.Log("Only fill the schedule in play mode.");
-		//		return;
-		//	}
-
-		//	ITimeFrame timeFrame = GetNextHoleInSchedule();
-		//	if (timeFrame == null)
-		//	{
-		//		Debug.Log("No space left in schedule.");
-		//		return;
-		//	}
-
-		//	FillScheduleTimeFrame(timeFrame);
-		//}
-
-		void FillScheduleTimeFrame(ITimeFrame timeFrame) //TODO: Add factory method
+		void FillScheduleTimeFrame(ITimeFrame timeFrame)
 		{
 			ITaskPoolItem taskPoolItem = _taskPool.FindTask(timeFrame, _context);
 
