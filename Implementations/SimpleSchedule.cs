@@ -8,6 +8,7 @@ namespace FedoraDev.NPCSchedule.Implementations
 	public class SimpleSchedule : ISchedule
 	{
 		[SerializeField, HideLabel, BoxGroup("Schedule")] List<IScheduleable> _schedule = new List<IScheduleable>();
+		[SerializeField] IContext _context;
 		[SerializeField] ITaskPool _taskPool;
 		[SerializeField] IScheduleable _defaultTask;
 
@@ -55,7 +56,7 @@ namespace FedoraDev.NPCSchedule.Implementations
 
 		void FillScheduleTimeFrame(ITimeFrame timeFrame) //TODO: Add factory method
 		{
-			ITaskPoolItem taskPoolItem = _taskPool.FindTask(timeFrame);
+			ITaskPoolItem taskPoolItem = _taskPool.FindTask(timeFrame, _context);
 
 			if (taskPoolItem != null)
 			{
@@ -114,25 +115,57 @@ namespace FedoraDev.NPCSchedule.Implementations
 
 		ITimeFrame GetNextHoleInSchedule()
 		{
+			ITimeFrame timeFrame = ScheduleFactory.ProduceTimeFrame();
+
 			if (_schedule.Count == 0)
-				return new SimpleTimeFrame(_defaultTask.TimeFrame.StartTime, _defaultTask.TimeFrame.EndTime);
+			{
+				timeFrame.StartTime.SetTime(_defaultTask.TimeFrame.StartTime.GetValue());
+				timeFrame.EndTime.SetTime(_defaultTask.TimeFrame.EndTime.GetValue());
+				return timeFrame;
+			}
+
+			bool startMatch = _schedule[0].TimeFrame.StartTime.GetValue() == _defaultTask.TimeFrame.StartTime.GetValue(); //Does the first task start at the first available start time?
+			bool endMatch = _schedule[_schedule.Count - 1].TimeFrame.EndTime.GetValue() == _defaultTask.TimeFrame.EndTime.GetValue(); //Does the last task end at the last available end time?
 
 			if (_schedule.Count == 1)
 			{
-				if (_schedule[_schedule.Count - 1].TimeFrame.EndTime.GetValue() == _defaultTask.TimeFrame.EndTime.GetValue())
+				if (startMatch && endMatch)
 					return null;
+				else if (startMatch)
+				{
+					timeFrame.StartTime.SetTime(_schedule[_schedule.Count - 1].TimeFrame.EndTime.GetValue());
+					timeFrame.EndTime.SetTime(_defaultTask.TimeFrame.EndTime.GetValue());
+					return timeFrame;
+				}
 				else
-					return new SimpleTimeFrame(_schedule[0].TimeFrame.EndTime, _defaultTask.TimeFrame.EndTime);
+				{
+					timeFrame.StartTime.SetTime(_defaultTask.TimeFrame.StartTime.GetValue());
+					timeFrame.EndTime.SetTime(_schedule[_schedule.Count - 1].TimeFrame.StartTime.GetValue());
+					return timeFrame;
+				}
+			}
+
+			if (!startMatch)
+			{
+				timeFrame.StartTime.SetTime(_defaultTask.TimeFrame.StartTime.GetValue());
+				timeFrame.EndTime.SetTime(_schedule[0].TimeFrame.StartTime.GetValue());
+				return timeFrame;
 			}
 
 			for (int i = 1; i < _schedule.Count; i++)
 				if (_schedule[i - 1].TimeFrame.EndTime.GetValue() != _schedule[i].TimeFrame.StartTime.GetValue())
-					return new SimpleTimeFrame(_schedule[i - 1].TimeFrame.EndTime, _schedule[i].TimeFrame.StartTime);
+				{
+					timeFrame.StartTime.SetTime(_schedule[i - 1].TimeFrame.EndTime.GetValue());
+					timeFrame.EndTime.SetTime(_schedule[i].TimeFrame.StartTime.GetValue());
+					return timeFrame;
+				}
 
-			if (_schedule[_schedule.Count - 1].TimeFrame.EndTime.GetValue() == _defaultTask.TimeFrame.EndTime.GetValue())
+			if (endMatch)
 				return null;
 
-			return new SimpleTimeFrame(_schedule[_schedule.Count - 1].TimeFrame.EndTime, _defaultTask.TimeFrame.EndTime);
+			timeFrame.StartTime.SetTime(_schedule[_schedule.Count - 1].TimeFrame.EndTime.GetValue());
+			timeFrame.EndTime.SetTime(_defaultTask.TimeFrame.EndTime.GetValue());
+			return timeFrame;
 		}
 	}
 }

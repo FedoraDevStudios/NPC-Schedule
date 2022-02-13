@@ -11,6 +11,7 @@ namespace FedoraDev.NPCSchedule.Implementations
         [SerializeField] IPrioritySolver _prioritySolverFab;
         [SerializeField] ITaskFilter _taskFilterFab;
         [SerializeField] IAttendantSolver _attendantSolverFab;
+		[SerializeField] IContext _contextSolverFab;
 
 		private void Reset()
 		{
@@ -31,6 +32,9 @@ namespace FedoraDev.NPCSchedule.Implementations
 
 			if (_attendantSolverFab == null)
 				_attendantSolverFab = new SimpleAttendantSolver();
+
+			if (_contextSolverFab == null)
+				_contextSolverFab = new EmptyContext();
 		}
 
 		public static ITaskPoolItem ProduceTaskPoolItem()
@@ -61,6 +65,11 @@ namespace FedoraDev.NPCSchedule.Implementations
         public static IAttendantSolver ProduceAttendantSolver()
 		{
             return ScheduleFactoryBehaviour.ScheduleFactory._attendantSolverFab.Produce();
+		}
+
+		public static IContext ProduceContext()
+		{
+			return ScheduleFactoryBehaviour.ScheduleFactory._contextSolverFab.Produce();
 		}
 	}
 }

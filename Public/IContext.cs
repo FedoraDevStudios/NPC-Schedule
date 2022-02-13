@@ -1,4 +1,7 @@
 namespace FedoraDev.NPCSchedule
 {
-    public interface IContext { }
+    public interface IContext
+    {
+        IContext Produce();
+    }
 }

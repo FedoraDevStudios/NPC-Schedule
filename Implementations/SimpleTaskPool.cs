@@ -18,8 +18,10 @@ namespace FedoraDev.NPCSchedule.Implementations
 			_taskPool.Add(taskPoolItem);
 		}
 
-		public ITaskPoolItem FindTask(ITimeFrame timeFrame)
+		public ITaskPoolItem FindTask(ITimeFrame timeFrame, IContext context)
 		{
+			List<ITaskPoolItem> availableTasks = new List<ITaskPoolItem>();
+
 			for (int i = 0; i < _taskPool.Count; i++)
 			{
 				ulong taskStart = _taskPool[i].TimeFrame.StartTime.GetValue();
@@ -30,10 +32,14 @@ namespace FedoraDev.NPCSchedule.Implementations
 				bool startTimeMatch = _taskPool[i].StartFlexible ? taskEnd > frameStart : taskStart >= frameStart;
 				bool endTimeMatch = _taskPool[i].EndFlexible ? taskStart < frameEnd : taskEnd <= frameEnd;
 
-				if (startTimeMatch && endTimeMatch)
-					return _taskPool[i];
+				if (startTimeMatch && endTimeMatch && _taskPool[i].TaskFilter.IsValid(context))
+					availableTasks.Add(_taskPool[i]);
 			}
 
+			availableTasks.Sort((a, b) => a.PrioritySolver.GetPriority(context) < b.PrioritySolver.GetPriority(context) ? 1 : -1);
+
+			if (availableTasks.Count > 0)
+				return availableTasks[0];
 			return null;
 		}
 	}
