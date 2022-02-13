@@ -5,7 +5,10 @@ namespace FedoraDev.NPCSchedule.Implementations
 {
 	public class ScheduleFactory : SerializedScriptableObject
     {
+		[SerializeField] ISchedule _scheduleFab;
+		[SerializeField] ITaskPool _taskPoolFab;
         [SerializeField] ITaskPoolItem _taskPoolItemFab;
+		[SerializeField] IScheduleable _scheduleableFab;
         [SerializeField] ITimeFrame _timeFrameFab;
         [SerializeField] ITimeSolver _timeSolverFab;
         [SerializeField] IPrioritySolver _prioritySolverFab;
@@ -15,14 +18,23 @@ namespace FedoraDev.NPCSchedule.Implementations
 
 		private void Reset()
 		{
-			if (_timeSolverFab == null)
-				_timeSolverFab = new SimpleTimeSolver();
+			if (_scheduleFab == null)
+				_scheduleFab = new SimpleSchedule();
+
+			if (_taskPoolFab == null)
+				_taskPoolFab = new SimpleTaskPool();
+
+			if (_taskPoolItemFab == null)
+				_taskPoolItemFab = new SimpleTaskPoolItem();
+
+			if (_scheduleableFab == null)
+				_scheduleableFab = new SimpleScheduleable();
 
 			if (_timeFrameFab == null)
 				_timeFrameFab = new SimpleTimeFrame(_timeSolverFab, _timeSolverFab);
 
-			if (_taskPoolItemFab == null)
-				_taskPoolItemFab = new SimpleTaskPoolItem();
+			if (_timeSolverFab == null)
+				_timeSolverFab = new SimpleTimeSolver();
 
 			if (_prioritySolverFab == null)
 				_prioritySolverFab = new SimplePrioritySolver();
@@ -37,9 +49,24 @@ namespace FedoraDev.NPCSchedule.Implementations
 				_contextSolverFab = new EmptyContext();
 		}
 
+		public static ISchedule ProduceSchedule()
+		{
+			return ScheduleFactoryBehaviour.ScheduleFactory._scheduleFab.Produce();
+		}
+
+		public static ITaskPool ProduceTaskPool()
+		{
+			return ScheduleFactoryBehaviour.ScheduleFactory._taskPoolFab.Produce();
+		}
+
 		public static ITaskPoolItem ProduceTaskPoolItem()
 		{
             return ScheduleFactoryBehaviour.ScheduleFactory._taskPoolItemFab.Produce();
+		}
+
+		public static IScheduleable ProduceScheduleable()
+		{
+			return ScheduleFactoryBehaviour.ScheduleFactory._scheduleableFab.Produce();
 		}
 
         public static ITimeFrame ProduceTimeFrame()

@@ -21,6 +21,14 @@ namespace FedoraDev.NPCSchedule.Implementations
 		//	FillSchedule();
 		//}
 
+		public ISchedule Produce()
+		{
+			SimpleSchedule schedule = new SimpleSchedule();
+			schedule._context = ScheduleFactory.ProduceContext();
+			schedule._defaultTask = ScheduleFactory.ProduceScheduleable();
+			return schedule;
+		}
+
 		public void SetTaskPool(ITaskPool taskPool) => _taskPool = taskPool;
 
 		public void FillSchedule()

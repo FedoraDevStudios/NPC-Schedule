@@ -7,10 +7,11 @@ namespace FedoraDev.NPCSchedule.Implementations
 	{
 		[SerializeField] List<ITaskPoolItem> _taskPool;
 
-		public SimpleTaskPool()
+		public ITaskPool Produce()
 		{
-			if (_taskPool == null)
-				_taskPool = new List<ITaskPoolItem>();
+			SimpleTaskPool taskPool = new SimpleTaskPool();
+			taskPool._taskPool = new List<ITaskPoolItem>();
+			return taskPool;
 		}
 
 		public void AddTask(ITaskPoolItem taskPoolItem)

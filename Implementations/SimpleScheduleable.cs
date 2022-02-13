@@ -10,6 +10,13 @@ namespace FedoraDev.NPCSchedule.Implementations
 		[SerializeField] ITask _task;
 		[SerializeField] ITimeFrame _timeFrame;
 
+		public IScheduleable Produce()
+		{
+			SimpleScheduleable scheduleable = new SimpleScheduleable();
+			scheduleable._timeFrame = ScheduleFactory.ProduceTimeFrame();
+			return scheduleable;
+		}
+
 		public int CompareTo(IScheduleable scheduleable) => ScheduleableHelper.CompareTo(this, scheduleable);
 	}
 }
