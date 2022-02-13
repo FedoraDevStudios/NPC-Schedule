@@ -8,6 +8,6 @@ namespace FedoraDev.NPCSchedule
         void AddTime(ulong duration);
         void SubtractTime(ulong duration);
 
-        ITimeSolver Produce();
+        ITimeSolver Produce(IScheduleFactory scheduleFactory);
     }
 }

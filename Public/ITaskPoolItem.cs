@@ -10,6 +10,6 @@ namespace FedoraDev.NPCSchedule
         bool StartFlexible { get; }
         bool EndFlexible { get; }
 
-        ITaskPoolItem Produce();
+        ITaskPoolItem Produce(IScheduleFactory scheduleFactory);
     }
 }

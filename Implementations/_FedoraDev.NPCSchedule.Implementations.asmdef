@@ -2,8 +2,7 @@
     "name": "_FedoraDev.NPCSchedule.Implementations",
     "rootNamespace": "FedoraDev.NPCSchedule.Implementations",
     "references": [
-        "GUID:54464dd2c3277b445a81dc494e1d5dc3",
-        "GUID:a6873be5df0b25644ac3b8f848c5acc2"
+        "GUID:54464dd2c3277b445a81dc494e1d5dc3"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

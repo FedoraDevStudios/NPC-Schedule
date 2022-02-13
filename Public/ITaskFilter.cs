@@ -3,6 +3,6 @@ namespace FedoraDev.NPCSchedule
     public interface ITaskFilter
     {
         bool IsValid(IContext context);
-        ITaskFilter Produce();
+        ITaskFilter Produce(IScheduleFactory scheduleFactory);
     }
 }

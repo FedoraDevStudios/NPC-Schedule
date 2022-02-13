@@ -21,11 +21,11 @@ namespace FedoraDev.NPCSchedule.Implementations
 		//	FillSchedule();
 		//}
 
-		public ISchedule Produce()
+		public ISchedule Produce(IScheduleFactory scheduleFactory)
 		{
 			SimpleSchedule schedule = new SimpleSchedule();
-			schedule._context = ScheduleFactory.ProduceContext();
-			schedule._defaultTask = ScheduleFactory.ProduceScheduleable();
+			schedule._context = scheduleFactory.ProduceContext();
+			schedule._defaultTask = scheduleFactory.ProduceScheduleable();
 			return schedule;
 		}
 
@@ -62,7 +62,7 @@ namespace FedoraDev.NPCSchedule.Implementations
 				ulong startTime = taskPoolItem.StartFlexible && frameStart > taskStart ? frameStart : taskStart;
 				ulong endTime = taskPoolItem.EndFlexible && frameEnd < taskEnd ? frameEnd : taskEnd;
 
-				scheduleable.TimeFrame = ScheduleFactory.ProduceTimeFrame();
+				scheduleable.TimeFrame = ScheduleFactoryBehaviour.ScheduleFactory.ProduceTimeFrame();
 				scheduleable.TimeFrame.StartTime.SetTime(startTime);
 				scheduleable.TimeFrame.EndTime.SetTime(endTime);
 				AddToScheduleList(scheduleable);
@@ -106,7 +106,7 @@ namespace FedoraDev.NPCSchedule.Implementations
 
 		ITimeFrame GetNextHoleInSchedule()
 		{
-			ITimeFrame timeFrame = ScheduleFactory.ProduceTimeFrame();
+			ITimeFrame timeFrame = ScheduleFactoryBehaviour.ScheduleFactory.ProduceTimeFrame();
 
 			if (_schedule.Count == 0)
 			{

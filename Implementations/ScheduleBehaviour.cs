@@ -15,16 +15,16 @@ namespace FedoraDev.NPCSchedule.Implementations
 		private void OnValidate()
 		{
             if (_schedule == null)
-                _schedule = ScheduleFactory.ProduceSchedule();
+                _schedule = ScheduleFactoryBehaviour.ScheduleFactory.ProduceSchedule();
         }
 
         void Reset()
 		{
             if (_schedule == null)
-                _schedule = ScheduleFactory.ProduceSchedule();
+                _schedule = ScheduleFactoryBehaviour.ScheduleFactory.ProduceSchedule();
 		}
 
-		public ISchedule Produce() => _schedule.Produce();
+		public ISchedule Produce(IScheduleFactory scheduleFactory) => _schedule.Produce(scheduleFactory);
 		public void FillSchedule() => _schedule.FillSchedule();
 		public void SetTaskPool(ITaskPool taskPool) => _schedule.SetTaskPool(taskPool);
 	}

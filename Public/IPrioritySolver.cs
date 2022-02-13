@@ -3,6 +3,6 @@ namespace FedoraDev.NPCSchedule
     public interface IPrioritySolver
     {
         int GetPriority(IContext context);
-        IPrioritySolver Produce();
+        IPrioritySolver Produce(IScheduleFactory scheduleFactory);
     }
 }

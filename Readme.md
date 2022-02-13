@@ -33,7 +33,7 @@ public class MyGameContext : IContext
 	[SerializeField] ScriptableCharacter _character; // Some Scriptable Object class for your character
 	[SerializeField] int _attendantCount;
 
-	public IContext Produce() => new MyGameContext();
+	public IContext Produce(IScheduleFactory scheduleFactory) => new MyGameContext();
 }
 ```
 
@@ -45,7 +45,7 @@ public class CharacterFilter : ITaskFilter
 {
 	[SerializeField] ScriptableCharacter _character;
 
-	public ITaskFilter Produce() => new CharacterFilter();
+	public ITaskFilter Produce(IScheduleFactory scheduleFactory) => new CharacterFilter();
 
 	public bool IsValid(IContext context)
 	{
@@ -66,7 +66,7 @@ public class AttendantQuantityPriority : IPrioritySolver
 	[SerializeField] _perAttendantValue = 10;
 	[SerializeField] _highestPriority = 100;
 
-	public IPrioritySolver Produce() => new AttendantQuantityPriority();
+	public IPrioritySolver Produce(IScheduleFactory scheduleFactory) => new AttendantQuantityPriority();
 
 	public int GetPriority(IContext context)
 	{

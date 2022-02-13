@@ -2,6 +2,6 @@ namespace FedoraDev.NPCSchedule
 {
     public interface IContext
     {
-        IContext Produce();
+        IContext Produce(IScheduleFactory scheduleFactory);
     }
 }

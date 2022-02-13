@@ -7,6 +7,6 @@ namespace FedoraDev.NPCSchedule.Implementations
 		[SerializeField] int _priority;
 
 		public int GetPriority(IContext context) => _priority;
-		public IPrioritySolver Produce() => new SimplePrioritySolver();
+		public IPrioritySolver Produce(IScheduleFactory scheduleFactory) => new SimplePrioritySolver();
 	}
 }

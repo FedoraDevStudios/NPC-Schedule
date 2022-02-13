@@ -4,7 +4,7 @@ namespace FedoraDev.NPCSchedule
     {
         IAttend[] Attendants { get; }
 
-        IAttendantSolver Produce();
+        IAttendantSolver Produce(IScheduleFactory scheduleFactory);
         int GetMinAttendants(IContext context);
         int GetMaxAttendants(IContext context);
         void AddAttendant(IAttend attendant);

@@ -16,10 +16,10 @@ namespace FedoraDev.NPCSchedule.Implementations
 			_endTime = endTime;
 		}
 
-		public ITimeFrame Produce()
+		public ITimeFrame Produce(IScheduleFactory scheduleFactory)
 		{
-			ITimeSolver startTime = ScheduleFactory.ProduceTimeSolver();
-			ITimeSolver endTime = ScheduleFactory.ProduceTimeSolver();
+			ITimeSolver startTime = scheduleFactory.ProduceTimeSolver();
+			ITimeSolver endTime = scheduleFactory.ProduceTimeSolver();
 			startTime.SetTime(startTime.GetValue());
 			endTime.SetTime(endTime.GetValue());
 			SimpleTimeFrame timeFrame = new SimpleTimeFrame(startTime, endTime);

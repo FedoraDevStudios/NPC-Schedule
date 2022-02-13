@@ -2,6 +2,6 @@ namespace FedoraDev.NPCSchedule.Implementations
 {
     public class EmptyContext : IContext
     {
-        public IContext Produce() => new EmptyContext();
+        public IContext Produce(IScheduleFactory scheduleFactory) => new EmptyContext();
     }
 }

@@ -20,15 +20,15 @@ namespace FedoraDev.NPCSchedule.Implementations
 		[SerializeField] bool _startFlexible = false;
 		[SerializeField] bool _endFlexible = false;
 
-		public ITaskPoolItem Produce()
+		public ITaskPoolItem Produce(IScheduleFactory scheduleFactory)
 		{
 			SimpleTaskPoolItem taskPoolItem = new SimpleTaskPoolItem();
 
 			taskPoolItem._task = _task;
-			taskPoolItem._timeFrame = ScheduleFactory.ProduceTimeFrame();
-			taskPoolItem._prioritySolver = ScheduleFactory.ProducePrioritySolver();
-			taskPoolItem._taskFilter = ScheduleFactory.ProduceTaskFilter();
-			taskPoolItem._attendantSolver = ScheduleFactory.ProduceAttendantSolver();
+			taskPoolItem._timeFrame = scheduleFactory.ProduceTimeFrame();
+			taskPoolItem._prioritySolver = scheduleFactory.ProducePrioritySolver();
+			taskPoolItem._taskFilter = scheduleFactory.ProduceTaskFilter();
+			taskPoolItem._attendantSolver = scheduleFactory.ProduceAttendantSolver();
 			taskPoolItem._startFlexible = _startFlexible;
 			taskPoolItem._endFlexible = _endFlexible;
 

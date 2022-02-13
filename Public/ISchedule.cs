@@ -2,7 +2,7 @@ namespace FedoraDev.NPCSchedule
 {
 	public interface ISchedule
     {
-		ISchedule Produce();
+		ISchedule Produce(IScheduleFactory scheduleFactory);
 		void FillSchedule();
 		void SetTaskPool(ITaskPool taskPool);
 	}

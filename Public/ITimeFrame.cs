@@ -10,6 +10,6 @@ namespace FedoraDev.NPCSchedule
         bool IsValidTime(ITimeSolver timeSolver);
         bool IsValidTime(ulong timeValue);
 
-        ITimeFrame Produce();
+        ITimeFrame Produce(IScheduleFactory scheduleFactory);
     }
 }

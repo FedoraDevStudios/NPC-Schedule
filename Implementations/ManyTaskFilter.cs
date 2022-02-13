@@ -14,7 +14,7 @@ namespace FedoraDev.NPCSchedule.Implementations
 		[SerializeField] Operation _filterOperation = Operation.And;
 		[SerializeField] ITaskFilter[] _taskFilters = new ITaskFilter[0];
 
-		public ITaskFilter Produce() => new ManyTaskFilter();
+		public ITaskFilter Produce(IScheduleFactory scheduleFactory) => new ManyTaskFilter();
 		public bool IsValid(IContext context)
 		{
 			switch (_filterOperation)

@@ -15,6 +15,6 @@ namespace FedoraDev.NPCSchedule.Implementations
 		public int GetMaxAttendants(IContext context) => _maxAttendants;
 
 		public void AddAttendant(IAttend attendant) => _attendants.Add(attendant);
-		public IAttendantSolver Produce() => new SimpleAttendantSolver();
+		public IAttendantSolver Produce(IScheduleFactory scheduleFactory) => new SimpleAttendantSolver();
 	}
 }

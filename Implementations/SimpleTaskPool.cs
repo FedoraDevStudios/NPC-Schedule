@@ -7,7 +7,7 @@ namespace FedoraDev.NPCSchedule.Implementations
 	{
 		[SerializeField] List<ITaskPoolItem> _taskPool;
 
-		public ITaskPool Produce()
+		public ITaskPool Produce(IScheduleFactory scheduleFactory)
 		{
 			SimpleTaskPool taskPool = new SimpleTaskPool();
 			taskPool._taskPool = new List<ITaskPoolItem>();

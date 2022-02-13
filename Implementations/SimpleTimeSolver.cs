@@ -9,7 +9,7 @@ namespace FedoraDev.NPCSchedule.Implementations
 		[SerializeField, HorizontalGroup("Time"), LabelText("Time")] byte _hour;
 		[SerializeField, HorizontalGroup("Time"), LabelText(":"), LabelWidth(5f)] byte _minute;
 
-		public ITimeSolver Produce()
+		public ITimeSolver Produce(IScheduleFactory scheduleFactory)
 		{
 			byte[] bytes = new byte[8];
 			bytes[0] = _minute;
