@@ -1,4 +1,4 @@
-namespace FedoraDev.NPCSchedule.Examples
+namespace FedoraDev.NPCSchedule.Implementations
 {
 	public class AlwaysTrueFilter : ITaskFilter
 	{
