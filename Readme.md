@@ -10,216 +10,73 @@ Follow the steps [Here](https://github.com/FedoraDevStudios/Installation-Unity) 
 A Factory manages the default implementations for your game. If you implement any of the core interfaces and want to use them instead, you can assign them in the Factory so that new objects start with your implementation. Add a `Schedule Factory Behaviour` to your scene. A Factory should have been created as `Assets/Fedora Dev/ScheduleFactory` when you do this, however you can create one with the button.
 
 ### Create a Task Pool
-The Task Pool holds the tasks that are available to an object. The layout of these tasks are defined by the interface `ITaskPoolItem`, and you can create your own implementation of `ITaskPool` to replace the provided `SimpleTaskPool`.
+The Task Pool holds the tasks that are available to an object. The layout of these tasks are defined by the interface `ITaskPoolItem` and implemented by default in `SimpleTaskPoolItem`. You can create your own implementation of `ITaskPool` to replace the provided `SimpleTaskPool`.
 
 Technically, you can have as many of these as you want, however `SimpleSchedule` will only talk to 1 by default. If you need your schedule to talk to multiple Task Pools, you will have to create an implementation of `IScheduleable`.
 
 You can add every task in your game into the Task Pool, however it may be easier to add your tasks dynamically at runtime. Just make sure all of the available tasks in your game are added before any of the schedules request tasks.
 
 ### Schedule
-A Schedule is also just a list of tasks, however they will only hold tasks that have been selected from the Task Pool. Tasks in this list are defined by the interface `IScheduleable`. You can also create your own implementations of `ISchedule` to replace the provided `SimpleSchedule`. 
+A Schedule is also just a list of tasks, however they will only hold tasks that have been selected from the Task Pool. Tasks in this list are defined by the interface `IScheduleable` and implemented by default in `SimpleScheduleable`. You can also create your own implementations of `ISchedule` to replace the provided `SimpleSchedule`. 
 
+`ScheduleBehaviour` is a wrapper for an `ISchedule` that generates the task list on `Start`. If you want to fill the Task Pool dynamically, be sure to do it in an `Awake` method to ensure the task list is generated before any Schedule requests tasks from it.
 
-
-
-### Add to Scene
-In the package, there is a prefab in the example provided that comes with everything set up. Add this prefab to a canvas and modify it to suit your needs. I would recommend creating a prefab variant from the provided one for ease of use later. You will also need to add a script to hide and show the console window as this is not preconfigured.
-
-### Create a Command
-If you're using `asmdef` files, you should only need to reference `_FedoraDev.DeveloperConsole`. You can reference `_FedoraDev.DeveloperConsole.Implementations` as well, however this will create hard dependencies and isn't the intended way to use this system.
-
-For a quick example on how to create your own command, you can take a look at some default implementations provided. These commands are not complex and are easy to follow. You can create a copy of one of these commands to start. Let's review one here.
-
-```c#
-public class EchoCommand : IConsoleCommand
-{
-	public string Name => "echo";
-	public string Usage => "echo {text to display}";
-	public IDeveloperConsole DeveloperConsole { get => _developerConsole; set => _developerConsole = value; }
-
-	IDeveloperConsole _developerConsole;
-
-	public void Execute(ICommandArguments arguments)
-	{
-		DeveloperConsole.PushMessage(arguments.TextEntered.Substring(arguments.CommandName.Length));
-	}
-
-	public string[] GetHelp(ICommandArguments arguments)
-	{
-		return "Prints the text that follows the command to the console.";
-	}
-}
-```
-
-##### Name
-```c#
-public string Name => "echo";
-```
-This tells the console how to refer to this command. When a user types 'echo' at the beginning of the command string, the console will refer to this command.
-
-##### Usage
-```c#
-public string Usage => "echo {text to display}";
-```
-This string displays when the command is listed by the console's help command. This is an easy way to tell the user how your command expects its format.
-
-##### DeveloperConsole
-```c#
-public IDeveloperConsole DeveloperConsole { get => _developerConsole; set => _developerConsole = value; }
-IDeveloperConsole _developerConsole;
-```
-We hold a reference to the Developer Console instance. This property gets assigned when the command is loaded into the console.
-
-##### Execute
-```c#
-public void Execute(ICommandArguments arguments)
-{
-	DeveloperConsole.PushMessage(arguments.TextEntered.Substring(arguments.CommandName.Length));
-}
-```
-Here is the meat and potatoes of the command. `ICommandArguments` comes with a lot of useful parts for your command so you don't have to parse the user input manually with each command. More on the interface below.
-
-##### GetHelp
-```c#
-public string[] GetHelp(ICommandArguments arguments)
-{
-	return new string[] { "Prints the text that follows the command to the console." };
-}
-```
-When a user types `help echo`, this gives the console the proper strings to print out. This returns a list of strings so that formatting is consistent within the console. In the default implementation, the console indents some parts of the command output for readability.
-
-### Add a Command to the Console
-Once you have a command created that implements `IConsoleCommand`, you can add the command to the list on the `ConsoleCommandBehaviour` component located on the Developer Console Game Object. Next time you run the game, your command will be loaded in with the rest. To test, you can use the builtin `help` command to get a list of the available commands.
-
-### Create a Pre Processor
-Pre processors allow you to modify command inputs before they're executed which provides you with more control over the entire console. I've created `ClipPreProcessor` which talks to the `Clip` command and allows you to insert copied values into commands dynamically. One good example would be to grab the ID of an entity with one command and then using that same ID as an argument in another.
+### Context
+Your project will need its own `IContext` implementation. Context is passed to Filters and Priorities and allow you to grab information specific to your game. This package comes with a default implementation `EmptyContext`. This implementation is useless and has no additional information for your game, so be sure to create your own version. You can also add your implementation to the Factory to make it easier when creating objects.
 
 ```C#
-public class ClipPreProcessor : IPreProcessCommand
+public class MyGameContext : IContext
 {
-	public IDeveloperConsole DeveloperConsole { get; set; }
+	public ScriptableCharacter Character => _character;
+	public int AttendantCount => _attendantCount;
 
-	public string PreProcess(string input)
+	[SerializeField] ScriptableCharacter _character; // Some Scriptable Object class for your character
+	[SerializeField] int _attendantCount;
+
+	public IContext Produce() => new MyGameContext();
+}
+```
+
+### Filters
+By default, this system only comes with `AlwaysTrueFilter` which allows any schedule access to that task, and a `ManyFilter` which allows the use of multiple filters using the given Operation. If you want certain tasks to be filtered per character, then be sure to add what character is requesting the task to your Context and create a new implementation of `ITaskFilter`.
+
+```C#
+public class CharacterFilter : ITaskFilter
+{
+	[SerializeField] ScriptableCharacter _character;
+
+	public ITaskFilter Produce() => new CharacterFilter();
+
+	public bool IsValid(IContext context)
 	{
-		ClipCommand spillCommand = DeveloperConsole.GetCommand<ClipCommand>();
-		Regex regex = new Regex(@"\[[0-9]+\]", RegexOptions.ExplicitCapture);
-		MatchCollection matches = regex.Matches(input);
-
-		foreach (Match match in matches)
-		{
-			GroupCollection groups = match.Groups;
-
-			foreach (Group group in groups)
-			{
-				string intString = group.Value.Substring(1, group.Value.Length - 2);
-				if (int.TryParse(intString, out int intValue))
-					input = input.Replace(group.Value, spillCommand.GetBuffer(intValue));
-			}
-		}
-
-		return input;
+		MyGameContext gameContext = context as MyGameContext;
+		return gameContext.Character == _character;
 	}
 }
 ```
 
-##### DeveloperConsole
-```C#
-public IDeveloperConsole DeveloperConsole { get; set; }
-```
-This stores the `IDeveloperConsole` that's used for this pre processor. This will be set when the pre processor is registered to the developer console.
+### Priorities
+By default, this system comes with `SimplePrioritySolver` which allows you to add a numeric priority directly to a task. This is not always useful as certain parameters can change how much a character wants to go to a task.
 
-##### PreProcess
 ```C#
-public string PreProcess(string input)
+public class AttendantQuantityPriority : IPrioritySolver
 {
-	ClipCommand spillCommand = DeveloperConsole.GetCommand<ClipCommand>();
-	Regex regex = new Regex(@"\[[0-9]+\]", RegexOptions.ExplicitCapture);
-	MatchCollection matches = regex.Matches(input);
+	// Character will want to go the most if there are already exactly 3 attendants. Any more or less will result in a lower priority.
+	[SerializeField] _targetAttendants = 3;
+	[SerializeField] _perAttendantValue = 10;
+	[SerializeField] _highestPriority = 100;
 
-	foreach (Match match in matches)
+	public IPrioritySolver Produce() => new AttendantQuantityPriority();
+
+	public int GetPriority(IContext context)
 	{
-		GroupCollection groups = match.Groups;
-
-		foreach (Group group in groups)
-		{
-			string intString = group.Value.Substring(1, group.Value.Length - 2);
-			if (int.TryParse(intString, out int intValue))
-				input = input.Replace(group.Value, spillCommand.GetBuffer(intValue));
-		}
+		MyGameContext gameContext = context as MyGameContext;
+		int attendantDifference = Mathf.Abs(_targetAttendants - gameContext.AttendantCount);
+		return _highestPriority - (attendantDifference * _perAttendantValue);
 	}
-
-	return input;
 }
 ```
-First, we grab a reference to the `ClipCommand` registered to the console. We use a Regex to find any instances of `[index]` within the command and swap them out for that index from the clip buffer. Afterwords, we return the input and the console will run the new command.
 
-### Add Pre Processor to the Console
-Similar to how we add commands to the console, we have a `PreProcessCommandBehaviour` with a reference to the console behaviour. During the awake method, these pre processors are registered to the console.
-
-## Details
-### Using Command Arguments
-The Command Arguments object contains a few useful nuggets of information for your command. For the below examples, assume the input received at the prompt is as follows:
-
-##### Example
-`inventory insert 13324678 -s=5 player -v`
-
-##### TextEntered
-```c#
-string TextEntered { get; }
-```
-This is the raw text that the user entered. In most cases, you won't need this information.
-
-##### CommandName
-```c#
-string CommandName { get; }
-```
-This is the command name received. In the example, this would be `inventory`.
-
-##### ArgumentQuantity
-```c#
-int ArgumentQuantity { get; }
-```
-This returns the quantity of arguments. in the above example, this would be `3`.
-
-##### GetArgument
-```c#
-string GetArgument(int index);
-```
-You can retreive your arguments by index. These will be ordered as they appear in the raw command. The following table represents what the example would give you:
-```c#
-GetArgument(0) => "insert";
-GetArgument(1) => "13324678";
-GetArgument(2) => "player";
-```
-
-##### GetFlag
-```c#
-string GetFlag(char flagName);
-```
-Flags differ from arguments as in most cases simply checking if the flag is present is all you need. This does support specific assignment of flags, as well. Given the above example, the following table describes what you have access to:
-```c#
-GetFlag('s') => "5";
-GetFlag('v') => "true"; //This is a string, not a boolean
-```
-
-##### Spill Command
-By default there is a command called `spill`. If you feed it a command, it will show you everything the arguments object will provide. For example:
-`spill inventory insert 13324678 -s=5 player -v`
-```
-Text Entered: inventory insert 13324678 -s=5 player -v
-Command: inventory
-Arguments: 3
-    0: insert
-    1: 13324678
-    2: player
-Flags: 2
-    s: 5
-    v: true
-```
-
-## Further Reading
-### IDeveloperConsole
-Every piece of the system is built for expansion. If the current console is not providing what you need, but you already have a ton of commands built out, you can simply create a new implementation of `IDeveloperConsole` and swap it in place without needing to touch the rest of your codebase. Currently, there are 2 implementations of `IDeveloperConsole` included; `DefaultDeveloperConsole` and `DeveloperConsoleBehaviour`. The behaviour handles all things Unity and simply stores a reference to an IDeveloperConsole. By default, it's assigned `DefaultDeveloperConsole`. This would be the easiest place to plug in your own implementation; simply select your `IDeveloperConsole` from the drop down on the component and everything should work seemlessly.
-
-### ConsoleCommandBehaviour
-This component is incredibly simple, it just holds a list of `IConsoleCommand` and registers them to the assigned `IDeveloperConsole` on `Awake`.
+### Attendants
+##### Note: This is not currently implemented properly.
+The more characters that decide to go to a task, the higher the attendant count is. An `AttendantSolver` will allow you to customize how many characters are able to attend that same task at the same time. Because this is not yet fully implemented, documentation will end here.
