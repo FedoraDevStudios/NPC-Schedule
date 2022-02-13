@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace FedoraDev.NPCSchedule.Examples
 {
-    public class ScheduleTestingBehaviour : SerializedMonoBehaviour
+    public class ScheduleBehaviour : SerializedMonoBehaviour
     {
         [SerializeField] ISchedule _schedule;
 
