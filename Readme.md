@@ -1,11 +1,27 @@
-# Developer Console
+# NPC Schedule
 
-A lightweight and extendible developer console system for Unity.
+A highly-extendible scheduling system for Unity. Can technically be used for anything, not just NPCs.
 
 ## Installation
 Follow the steps [Here](https://github.com/FedoraDevStudios/Installation-Unity) to add this package to your Unity project using this package's URL.
 
 ## Usage
+### What is a Factory?
+A Factory manages the default implementations for your game. If you implement any of the core interfaces and want to use them instead, you can assign them in the Factory so that new objects start with your implementation. Add a `Schedule Factory Behaviour` to your scene. A Factory should have been created as `Assets/Fedora Dev/ScheduleFactory` when you do this, however you can create one with the button.
+
+### Create a Task Pool
+The Task Pool holds the tasks that are available to an object. The layout of these tasks are defined by the interface `ITaskPoolItem`, and you can create your own implementation of `ITaskPool` to replace the provided `SimpleTaskPool`.
+
+Technically, you can have as many of these as you want, however `SimpleSchedule` will only talk to 1 by default. If you need your schedule to talk to multiple Task Pools, you will have to create an implementation of `IScheduleable`.
+
+You can add every task in your game into the Task Pool, however it may be easier to add your tasks dynamically at runtime. Just make sure all of the available tasks in your game are added before any of the schedules request tasks.
+
+### Schedule
+A Schedule is also just a list of tasks, however they will only hold tasks that have been selected from the Task Pool. Tasks in this list are defined by the interface `IScheduleable`. You can also create your own implementations of `ISchedule` to replace the provided `SimpleSchedule`. 
+
+
+
+
 ### Add to Scene
 In the package, there is a prefab in the example provided that comes with everything set up. Add this prefab to a canvas and modify it to suit your needs. I would recommend creating a prefab variant from the provided one for ease of use later. You will also need to add a script to hide and show the console window as this is not preconfigured.
 

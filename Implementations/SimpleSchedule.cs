@@ -23,36 +23,36 @@ namespace FedoraDev.NPCSchedule.Implementations
 
 		public void FillSchedule()
 		{
-			//ITimeFrame timeFrame = GetNextHoleInSchedule();
-			//for (int i = 100; i > 0; i--) //Do this up to 100 times before quitting.
-			//{
-			//	FillScheduleTimeFrame(timeFrame);
-
-			//	timeFrame = GetNextHoleInSchedule();
-
-			//	if (timeFrame == null)
-			//		break;
-			//}
-		}
-
-		[Button]
-		public void AddTask()
-		{
-			if (!Application.isPlaying)
-			{
-				Debug.Log("Only fill the schedule in play mode.");
-				return;
-			}
-
 			ITimeFrame timeFrame = GetNextHoleInSchedule();
-			if (timeFrame == null)
+			for (int i = 100; i > 0; i--) //Do this up to 100 times before quitting.
 			{
-				Debug.Log("No space left in schedule.");
-				return;
-			}
+				FillScheduleTimeFrame(timeFrame);
 
-			FillScheduleTimeFrame(timeFrame);
+				timeFrame = GetNextHoleInSchedule();
+
+				if (timeFrame == null)
+					break;
+			}
 		}
+
+		//[Button]
+		//public void AddTask()
+		//{
+		//	if (!Application.isPlaying)
+		//	{
+		//		Debug.Log("Only fill the schedule in play mode.");
+		//		return;
+		//	}
+
+		//	ITimeFrame timeFrame = GetNextHoleInSchedule();
+		//	if (timeFrame == null)
+		//	{
+		//		Debug.Log("No space left in schedule.");
+		//		return;
+		//	}
+
+		//	FillScheduleTimeFrame(timeFrame);
+		//}
 
 		void FillScheduleTimeFrame(ITimeFrame timeFrame) //TODO: Add factory method
 		{
