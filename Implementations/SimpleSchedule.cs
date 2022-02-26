@@ -45,9 +45,9 @@ namespace FedoraDev.NPCSchedule.Implementations
 			}
 		}
 
-		public IScheduleable GetTaskAt(ITimeSolver time)
+		public IScheduleable GetTaskAt(ulong timeValue)
 		{
-			int taskIndex = GetTaskIndexAtTime(time.GetValue());
+			int taskIndex = GetTaskIndexAtTime(timeValue);
 			if (taskIndex == -1)
 				return null;
 			return _schedule[taskIndex];

@@ -5,6 +5,6 @@ namespace FedoraDev.NPCSchedule
 		ISchedule Produce(IScheduleFactory scheduleFactory);
 		void FillSchedule();
 		void SetTaskPool(ITaskPool taskPool);
-		IScheduleable GetTaskAt(ITimeSolver time);
+		IScheduleable GetTaskAt(ulong timeValue);
 	}
 }
