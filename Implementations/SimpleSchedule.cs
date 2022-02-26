@@ -47,7 +47,10 @@ namespace FedoraDev.NPCSchedule.Implementations
 
 		public IScheduleable GetTaskAt(ITimeSolver time)
 		{
-			return _schedule[GetTaskIndexAtTime(time.GetValue())];
+			int taskIndex = GetTaskIndexAtTime(time.GetValue());
+			if (taskIndex == -1)
+				return null;
+			return _schedule[taskIndex];
 		}
 
 		void FillScheduleTimeFrame(ITimeFrame timeFrame)
