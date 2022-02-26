@@ -15,6 +15,7 @@ namespace FedoraDev.NPCSchedule.Implementations
         [SerializeField] ITaskFilter _taskFilterFab;
         [SerializeField] IAttendantSolver _attendantSolverFab;
 		[SerializeField] IContext _contextSolverFab;
+		[SerializeField] ILocale _localeFab;
 
 		private void Reset()
 		{
@@ -28,6 +29,7 @@ namespace FedoraDev.NPCSchedule.Implementations
 			if (_taskFilterFab == null) _taskFilterFab = new ManyTaskFilter();
 			if (_attendantSolverFab == null) _attendantSolverFab = new SimpleAttendantSolver();
 			if (_contextSolverFab == null) _contextSolverFab = new EmptyContext();
+			if (_localeFab == null) _localeFab = new SimpleLocale();
 		}
 
 		public ISchedule ProduceSchedule() => _scheduleFab.Produce(this);
@@ -40,5 +42,6 @@ namespace FedoraDev.NPCSchedule.Implementations
 		public ITaskFilter ProduceTaskFilter() => _taskFilterFab.Produce(this);
 		public IAttendantSolver ProduceAttendantSolver() => _attendantSolverFab.Produce(this);
 		public IContext ProduceContext() => _contextSolverFab.Produce(this);
+		public ILocale ProduceLocale() => _localeFab.Produce(this);
 	}
 }

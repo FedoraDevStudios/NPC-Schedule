@@ -12,5 +12,6 @@
         ITaskFilter ProduceTaskFilter();
         IAttendantSolver ProduceAttendantSolver();
         IContext ProduceContext();
+        ILocale ProduceLocale();
     }
 }
