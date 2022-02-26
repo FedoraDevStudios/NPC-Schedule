@@ -45,6 +45,11 @@ namespace FedoraDev.NPCSchedule.Implementations
 			}
 		}
 
+		public IScheduleable GetTaskAt(ITimeSolver time)
+		{
+			return _schedule[GetTaskIndexAtTime(time.GetValue())];
+		}
+
 		void FillScheduleTimeFrame(ITimeFrame timeFrame)
 		{
 			ITaskPoolItem taskPoolItem = _taskPool.FindTask(timeFrame, _context);
